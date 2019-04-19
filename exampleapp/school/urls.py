@@ -6,6 +6,7 @@ from .views import UserAPI, LessonAPI
 router = routers.DefaultRouter()
 
 urlpatterns = [
+    path("", router.as_view()),
     path("user/", UserAPI.as_view()),
     path("user/<int:id>/", UserAPI.as_view()),
     path("lesson/", LessonAPI.as_view()),
