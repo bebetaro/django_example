@@ -120,14 +120,8 @@ class ClaimViewSet(viewsets.ViewSet):
 
             l["price"] = price
 
-        #merged = {"eng": eng_count, "prog": prog_count, "fin": fin_count}
-        # print(merged)
-
-        # print(count)
-        #queryset.query.group_by = ["user.id"]
-        #serializer = LessonSerializer(user_info, many=True)
         return Response(user_info, status=status.HTTP_200_OK)
-        # return Response(serializer.data, status=status.HTTP_200_OK)
+        
 
 
 class LessonViewSet(viewsets.ModelViewSet):
@@ -162,77 +156,6 @@ class LessonViewSet(viewsets.ModelViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    """Page for edit lesson information"""
-
-
-"""
-    @action(detail=True, methods=["put"])
-    def edit(self, request, pk):
-        lesson = Lesson.objects.get(id=request.data.id)
-        serializer = LessonSerializer(lesson, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-
-
-        #serializer = UserSerializer(user, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-
-
-class LessonAPI(APIView):
-    def get(self, request, format=None):
-        lesson = Lesson.objects.all()
-        #serilizer = LessonSerializer(lesson)
-        return Response(serilizer.data)
-
-    def post(self, request, format=None):
-        serializer = LessonSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def put(self, request, id, format=None):
-        lesson = Lesson.objects.get(pk=id)
-        serializer = UserSerializer(lesson, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-"""
-"""
-    @action(detail=True, methods=["put"])
-    def edit(self, request, pk):
-        user = User.objects.get(id=request.data.id)
-        serializer = UserSerializer(user, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-        #serializer = UserSerializer(user, data=request.data)
-    
-    
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-
-
-
-    def get(self, request, format=None):
-        user = User.objects.all()
-        serilizer = UserSerializer(user)
-        return Response(serilizer.data)
-
-    def post(self, request, format=None):
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-"""
+   
 
 # Create your views here.
