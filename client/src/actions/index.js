@@ -1,4 +1,4 @@
-import { FETCH_USER, FETCH_LESSON } from './types';
+import { FETCH_USER, FETCH_LESSON, FETCH_CLAIM } from './types';
 import axios from 'axios';
 
 export const fetchUsers = () => async dispatch => {
@@ -51,7 +51,7 @@ export const fetchClaim = month => async dispatch => {
       return user;
     });
 
-    dispatch({ type: FETCH_USER, payload: newData });
+    dispatch({ type: FETCH_CLAIM, payload: newData });
   } else {
     let counter = 0;
     const newData = userList.data.map(user => {
@@ -77,6 +77,6 @@ export const fetchClaim = month => async dispatch => {
       }
     });
 
-    dispatch({ type: FETCH_USER, payload: newData });
+    dispatch({ type: FETCH_CLAIM, payload: newData });
   }
 };

@@ -9,7 +9,7 @@ import { isArray } from 'util';
 
 class Claim extends Component {
   renderClaimTable() {
-    return this.props.users.map(user => {
+    return this.props.claim.map(user => {
       if (isArray(user.genre)) {
         const genre_count = user.genre[0];
         user.genre.shift();
@@ -84,8 +84,8 @@ class Claim extends Component {
   }
 }
 
-function mapStateToProps({ users }) {
-  return { users };
+function mapStateToProps({ claim }) {
+  return { claim };
 }
 
 export default compose(
