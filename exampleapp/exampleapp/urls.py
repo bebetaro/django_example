@@ -16,11 +16,11 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 
-from school.urls import urlpatterns
+from school.urls import router
 #from django.urls import path
 
 
 urlpatterns = [
     url(r"^admin/", admin.site.urls),
-    url(r"^api/", include(urlpatterns))
+    url(r"^api/", include(router.urls))
 ]

@@ -1,16 +1,10 @@
-from django.urls import path
 from rest_framework import routers
-from rest_framework.urlpatterns import format_suffix_patterns
-from .views import UserAPI, LessonAPI
+from school.views import UserViewSet, LessonViewSet, ClaimViewSet
 
 router = routers.DefaultRouter()
 
-urlpatterns = [
-    path("", router.as_view()),
-    path("user/", UserAPI.as_view()),
-    path("user/<int:id>/", UserAPI.as_view()),
-    path("lesson/", LessonAPI.as_view()),
-    path("lesson/<int:id>/", LessonAPI.as_view()),
-]
-
-urlpatterns = format_suffix_patterns(urlpatterns)
+# When need edit, add id after user or lesson then put request
+# (e.g.) user/1 and put json request
+router.register(r"user", UserViewSet, "user_route")
+router.register(r"lesson", LessonViewSet, "lesson_route")
+router.register(r"claim", ClaimViewSet, "claim_route")
