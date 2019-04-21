@@ -32,3 +32,51 @@ export const updateLesson = (values, history) => async dispatch => {
   await axios.put(url, values);
   history.push('/lessonlist');
 };
+
+export const fetchClaim = month => async dispatch => {
+  const userList = await axios.get('/api/user');
+
+  const url = `/api/claim/?month=${month}`;
+  const res = await axios.get(url);
+
+  if (res.data.length === 0) {
+    const newData = userList.data.map(user => {
+      user = {
+        user: user['id'],
+        name: user['name'],
+        genre: 0,
+        count: 0,
+        price: 0
+      };
+      return user;
+    });
+
+    dispatch({ type: FETCH_USER, payload: newData });
+  } else {
+    let counter = 0;
+    const newData = userList.data.map(user => {
+      if (user.id === res.data[counter].user) {
+        user = {
+          user: user['id'],
+          name: user['name'],
+          genre: res.data[counter]['genre'].split(','),
+          price: res.data[counter]['price'],
+          count: res.data[counter]['count']
+        };
+        counter++;
+        return user;
+      } else {
+        user = {
+          user: user['id'],
+          name: user['name'],
+          genre: 0,
+          count: 0,
+          price: 0
+        };
+        return user;
+      }
+    });
+
+    dispatch({ type: FETCH_USER, payload: newData });
+  }
+};

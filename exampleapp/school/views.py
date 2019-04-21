@@ -2,6 +2,7 @@ from rest_framework import viewsets, status
 from django.http import QueryDict
 from rest_framework.response import Response
 from django_filters import rest_framework as filters
+from django.db.models import Sum, Count
 #from django.http import Http404
 from rest_framework.decorators import action
 from school.models import User, Lesson
@@ -54,12 +55,79 @@ class UserViewSet(viewsets.ModelViewSet):
 class ClaimViewSet(viewsets.ViewSet):
 
     def list(self, request):
-        
-        month=self.request.query_params.get("month",None)
-        queryset = Lesson.objects.filter(date__month=month)
-        serializer = LessonSerializer(queryset, many=True)
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        month = self.request.query_params.get("month", None)
+        queryset = Lesson.objects.filter(date__month=month)
+        #count = queryset.values("user_id").annotate(genre="genre")
+        user_info = queryset.values("user").annotate(
+            count=Count("id"), genre=Count("genre", distinct=True))
+        eng_count = queryset.filter(genre="英語").values(
+            "user").annotate(hours=Sum("hours"))
+        prog_count = queryset.filter(genre="プログラミング").values(
+            "user").annotate(hours=Sum("hours"))
+        fin_count = queryset.filter(genre="ファイナンス").values(
+            "user").annotate(hours=Sum("hours"))
+        #print(eng_count, prog_count, fin_count)
+
+        for k in user_info:
+            k["eng_hours"] = 0
+            k["prog_hours"] = 0
+            k["fin_hours"] = 0
+
+        for i in eng_count:
+            e_user = i.get("user")
+            for j in user_info:
+                u_user = j.get("user")
+
+                if e_user == u_user:
+                    hours = i.get("hours")
+                    j["eng_hours"] = hours
+                    genre = str(j.get("genre"))
+                    j["genre"] = genre+","+"英語"
+
+        for i in prog_count:
+            e_user = i.get("user")
+            for j in user_info:
+                u_user = j.get("user")
+
+                if e_user == u_user:
+                    hours = i.get("hours")
+                    j["prog_hours"] = hours
+                    genre = str(j.get("genre"))
+                    j["genre"] = genre+","+"プログラミング"
+
+        for i in fin_count:
+            e_user = i.get("user")
+            for j in user_info:
+                u_user = j.get("user")
+
+                if e_user == u_user:
+                    hours = i.get("hours")
+                    j["fin_hours"] = hours
+                    genre = str(j.get("genre"))
+                    j["genre"] = genre+","+"ファイナンス"
+        for l in user_info:
+            price = 0
+            eng = l.get("eng_hours")
+            if eng > 0:
+                price += calcPrice(eng, "英語")
+            prog = l.get("prog_hours")
+            if prog > 0:
+                price += calcPrice(prog, "プログラミング")
+            fin = l.get("fin_hours")
+            if fin > 0:
+                price += calcPrice(fin, "ファイナンス")
+
+            l["price"] = price
+
+        #merged = {"eng": eng_count, "prog": prog_count, "fin": fin_count}
+        # print(merged)
+
+        # print(count)
+        #queryset.query.group_by = ["user.id"]
+        #serializer = LessonSerializer(user_info, many=True)
+        return Response(user_info, status=status.HTTP_200_OK)
+        # return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class LessonViewSet(viewsets.ModelViewSet):
@@ -94,16 +162,6 @@ class LessonViewSet(viewsets.ModelViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=False)
-    def claim(self, request):
-        lessons = self.get_queryset()
-        serializer = LessonSerializer(lessons, many=True)
-        filterset_class = ClaimFilter
-        print(serializer)
-
-        # if serializer.is_valid():
-        return Response(serializer.data, status=status.HTTP_200_OK)
-        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     """Page for edit lesson information"""
 
 

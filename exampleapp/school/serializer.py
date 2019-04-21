@@ -18,3 +18,4 @@ class LessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
         fields = ("id", "user", "genre", "date", "hours", "money", "user_id")
+
