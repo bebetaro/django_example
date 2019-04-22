@@ -67,11 +67,12 @@ class Report extends Component {
         <table className="striped">
           <thead>
             <tr>
-              <th>顧客ID</th>
-              <th>顧客名</th>
               <th>ジャンル</th>
-              <th>合計レッスン数</th>
-              <th>請求金額</th>
+              <th>性別</th>
+              <th>ジャンル</th>
+              <th>レッスン数</th>
+              <th>受講者数</th>
+              <th>売り上げ</th>
             </tr>
           </thead>
           <tbody>{this.renderClaimTable()}</tbody>

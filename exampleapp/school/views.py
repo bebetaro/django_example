@@ -52,6 +52,19 @@ class UserViewSet(viewsets.ModelViewSet):
     """Page for edit user information"""
 
 
+class ReportViewSet(viewsets.ViewSet):
+    def list(self, request):
+        month = self.request.query_params.get("month", None)
+        queryset = Lesson.objects.filter(date__month=month)
+        m_queryset = queryset.values("genre").annotate(
+            lesson=Count("id"), student=Count("user"), money=Sum("money")).filter(user__sex="男")
+        w_queryset = queryset.values("genre").annotate(
+            lesson=Count("id"), student=Count("user"), money=Sum("money")).filter(user__sex="女")
+
+        merged = {"man": m_queryset, "woman": w_queryset}
+        return Response(merged, status=status.HTTP_200_OK)
+
+
 class ClaimViewSet(viewsets.ViewSet):
 
     def list(self, request):
@@ -121,7 +134,6 @@ class ClaimViewSet(viewsets.ViewSet):
             l["price"] = price
 
         return Response(user_info, status=status.HTTP_200_OK)
-        
 
 
 class LessonViewSet(viewsets.ModelViewSet):
@@ -156,6 +168,5 @@ class LessonViewSet(viewsets.ModelViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-   
 
 # Create your views here.
